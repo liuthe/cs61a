@@ -222,22 +222,22 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if start==goal:  # Fill in the condition
-        # BEGIN
-        return 0
-        # END
-    elif ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    #assert False, 'Remove this line'
+    if limit<0:
+        return 1000
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+        if len(start)*len(goal)==0:
+            return max([len(start),len(goal)])
+        else:
+            if start[0]==goal[0]:
+                return minimum_mewtations(start[1:], goal[1:], limit)
+            else:
+                add = minimum_mewtations(start[0:], goal[1:], limit-1)
+                remove = minimum_mewtations(start[1:], goal[0:], limit-1)
+                substitue = minimum_mewtations(start[1:], goal[1:], limit-1)
+                return min(add,remove,substitue)+1
+
+    
 
 
 def final_diff(typed, source, limit):
@@ -279,6 +279,15 @@ def report_progress(typed, prompt, user_id, upload):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    s = 0
+    for _ in range(len(typed)):
+        if typed[_]!=prompt[_]:
+            break
+        else:
+            s=s+1
+    p = s/len(prompt)
+    upload({'id': user_id, 'progress': p})
+    print(p)
     # END PROBLEM 8
 
 
@@ -301,6 +310,13 @@ def time_per_word(words, times_per_player):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    time_list = []
+    for i in range(len(times_per_player)):
+        t_p = []
+        for j in range(len(times_per_player[i])-1):
+            t_p.append(times_per_player[i][j+1]-times_per_player[i][j])
+        time_list.append(t_p)
+    return match(words,time_list)
     # END PROBLEM 9
 
 
@@ -323,6 +339,14 @@ def fastest_words(match):
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    word_list = [[] for p in player_indices]
+    word_ip_list = []
+    for w in word_indices:
+        find_player_time_for_word_w = lambda player: time(match, player, w)
+        fatest_player = min(player_indices, key=find_player_time_for_word_w)
+        # print('DEUBG: the fatest player for word:', word_at(game,w), 'is:', fatest_player)
+        word_list[fatest_player].append(get_word(match, w))
+    return word_list
     # END PROBLEM 10
 
 
